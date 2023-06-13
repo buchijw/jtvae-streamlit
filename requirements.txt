@@ -1,0 +1,12 @@
+torch
+rdkit
+numpy
+tqdm
+networkx
+scipy
+molbloom
+stqdm
+pandas
+streamlit_ext
+streamlit_lottie
+requests
