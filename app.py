@@ -56,9 +56,9 @@ def img_to_bytes(img_path):
     img_bytes = Path(img_path).read_bytes()
     encoded = base64.b64encode(img_bytes).decode()
     return encoded
-def img_to_html(img_path):
-    img_html = "<img src='data:image/png;base64,{}' class='img-fluid' style='max-width: 500px;'>".format(
-      img_to_bytes(img_path)
+def img_to_html(img_path,max_width=500):
+    img_html = "<img src='data:image/png;base64,{}' class='img-fluid' style='max-width: {}px;'>".format(
+      img_to_bytes(img_path), max_width
     )
     return img_html
 
@@ -276,8 +276,11 @@ def colorize_step(n_step,cur_step):
     return color_list
 
 def form_header():
-    st.markdown("<h1 style='text-align: center;'>Junction Tree Variational Autoencoder for Molecular Graph Generation (JTVAE)</h1>",unsafe_allow_html=True)
-    st.markdown("<h3 style='text-align: center;'>Wengong Jin, Regina Barzilay, Tommi Jaakkola</h3>",unsafe_allow_html=True)
+    st.markdown("<h1 style='padding: 25px;text-align: center;color: white;background-color: tomato;'>Molecular Optimization using Junction Tree Variational Autoencoder</h1>",unsafe_allow_html=True)
+    st.markdown("<h4 style='padding: 10px;text-align: center;color: white;background-color: mediumseagreen;'>Gia-Bao Truong</h4>",unsafe_allow_html=True)
+    with st.expander(':star2: About the model'):
+        st.markdown("<p style='text-align: center;'>Based on Junction Tree Variational Autoencoder for Molecular Graph Generation (JTVAE)</p>",unsafe_allow_html=True)
+        st.markdown("<p style='text-align: center;'>Wengong Jin, Regina Barzilay, Tommi Jaakkola</p>",unsafe_allow_html=True)
 
     # determines button color which should be red when user is on that given step
     oam_type = 'primary' if st.session_state['current_view'] == 0 else 'secondary'
@@ -309,14 +312,49 @@ def form_body():
             About()
         
 def About():
-    descrip = '''
+    descrip_model = '''
 We seek to automate the design of molecules based on specific chemical properties. In computational terms, this task involves continuous embedding and generation of molecular graphs. Our primary contribution is the direct realization of molecular graphs, a task previously approached by generating linear SMILES strings instead of graphs. Our junction tree variational autoencoder generates molecular graphs in two phases, by first generating a tree-structured scaffold over chemical substructures, and then combining them into a molecule with a graph message passing network. This approach allows us to incrementally expand molecules while maintaining chemical validity at every step. We evaluate our model on multiple tasks ranging from molecular generation to optimization. Across these tasks, our model outperforms previous state-of-the-art baselines by a significant margin.
-
-[https://arxiv.org/abs/1802.04364](https://arxiv.org/abs/1802.04364)'''
-    st.markdown(descrip)
-    st.markdown("<p style='text-align: center;'>"+
-                    img_to_html('about.png')+
-                    "</p>", unsafe_allow_html=True)
+'''
+    img_caption = '''
+Figure 3. Overview of our method: A molecular graph G is first decomposed into its junction tree TG, where each colored node in the tree represents a substructure in the molecule. We then encode both the tree and graph into their latent embeddings zT and zG. To decode the molecule, we first reconstruct junction tree from zT , and then assemble nodes in the tree back to the original molecule.'''
+    
+    with st.expander(':four_leaf_clover: About the author',expanded=True):
+        st.markdown("<h4 style='text-align:center;'>Gia-Bao Truong</h4>",unsafe_allow_html=True)
+        st.markdown("<h4 style='color:tomato; text-align:center;'>Student at</h4>",unsafe_allow_html=True)
+        st.markdown("<p style='text-align:center;'>"+
+                        img_to_html('img/about1.png',64)+' '+img_to_html('img/about2.png',64)+
+                        "</p>", unsafe_allow_html=True)
+        st.markdown("<h5 style='text-align:center;'>Faculty of Pharmacy, University of Medicine and Pharmacy at Ho Chi Minh City</h5>",unsafe_allow_html=True)
+        st.markdown("<h4 style='color:tomato; text-align:center;'>Team</h4>",unsafe_allow_html=True)
+        st.markdown("<p style='text-align:center;'>"+
+                        img_to_html('img/about3.png',64)+
+                        "</p>", unsafe_allow_html=True)
+        st.markdown("<h5 style='text-align:center;'>MedAI</h5>",unsafe_allow_html=True)
+        
+    
+    with st.expander(':star2: About the model',expanded=True):
+        st.markdown("Based on Junction Tree Variational Autoencoder for Molecular Graph Generation (JTVAE)",unsafe_allow_html=True)
+        st.markdown("<h4 style='color:tomato;'>Citing</h4>",unsafe_allow_html=True)
+        st.markdown("Paper: [https://arxiv.org/abs/1802.04364](https://arxiv.org/abs/1802.04364)")
+        st.code('''@misc{jin2019junction,
+                        title={Junction Tree Variational Autoencoder for Molecular Graph Generation}, 
+                        author={Wengong Jin and Regina Barzilay and Tommi Jaakkola},
+                        year={2019},
+                        eprint={1802.04364},
+                        archivePrefix={arXiv},
+                        primaryClass={cs.LG}
+                        }''')
+        st.markdown("<h4 style='color:tomato;'>Author</h4>",unsafe_allow_html=True)
+        st.markdown("Wengong Jin, Regina Barzilay, Tommi Jaakkola",unsafe_allow_html=True)
+        st.markdown("<h4 style='color:tomato;'>Abstract</h4>",unsafe_allow_html=True)
+        st.markdown(descrip_model)
+        ab = st.columns([1,10,1])
+        ab[1].markdown("<p style='text-align: center;'>"+
+                        img_to_html('img/model_fig.png')+
+                        "</p>", unsafe_allow_html=True)
+        ab[1].markdown("<p style='text-align: center;'>"+
+                        img_caption+
+                        "</p>",unsafe_allow_html=True)
     
 def Optimize_a_molecule():
     st.markdown("<h2 style='text-align: center;'>Optimize a molecule</h2>",unsafe_allow_html=True)
